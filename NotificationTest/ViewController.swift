@@ -17,6 +17,9 @@ class ViewController: UIViewController {
     @IBOutlet weak var etTime: UITextField!
     @IBOutlet weak var etUserInfoKey: UITextField!
     @IBOutlet weak var etUserInfoValue: UITextField!
+    @IBOutlet weak var tvUserInfo: UILabel!
+    @IBOutlet weak var outsideScrollView: UIScrollView!
+    @IBOutlet weak var insideScrollView: UIScrollView!
     
     private var userInfo: [AnyHashable : Any] = [AnyHashable : Any]()
     
@@ -31,6 +34,7 @@ class ViewController: UIViewController {
         etUserInfoKey.delegate = self
         etUserInfoValue.delegate = self
         
+        tvUserInfo.text = "\(userInfo)"
     }
     
     //添加UserInfo
@@ -44,6 +48,8 @@ class ViewController: UIViewController {
         etUserInfoKey.text = ""
         etUserInfoValue.text = ""
         userInfo[key] = value
+        
+        tvUserInfo.text = "\(userInfo)"
     }
     
     //清除UserInfo
@@ -51,6 +57,8 @@ class ViewController: UIViewController {
         userInfo.removeAll()
         etUserInfoKey.text = ""
         etUserInfoValue.text = ""
+        
+        tvUserInfo.text = "\(userInfo)"
     }
     
     //显示通知
