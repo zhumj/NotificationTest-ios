@@ -57,15 +57,37 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         print("注册远程通知成功: \(deviceStr)")
     }
 
-    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-
-    }
-
     //注册远程通知失败的回调
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
         //TODO: 注册失败后的结果, 可以在这里记录失败结果, 以后再伺机弹框给用户打开通知
         print("注册远程通知失败: \(error.localizedDescription)")
     }
+    
+    //远程通知点击 - 在前台调用下面该方法,该方法需要设置Background Modes --> Remote Notifications
+    //用户点击通知以后才会调用，如果想一收到消息（用户还没点击通知）就会调用该方法，需要有3个条件
+    //1、设置Background Modes –> Remote Notifications
+    //2、在代理方法中调用代码块completionHandler(UIBackgroundFetchResultNewData);
+    //3、App服务器发送数据时要增加一个”content-available”字段，值随意写
+    //满足以上三个条件，当接收到通知时立即会调用代理方法
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        let status = application.applicationState
+        switch status {
+        case .active:
+            NSLog("在前台收到推送")
+            break
+        case .inactive:
+            NSLog("后台->前台")
+            break
+        case .background:
+            NSLog("后台")
+            break
+        @unknown default:
+            NSLog("不知道哪里")
+            break
+        }
+        completionHandler(.newData)
+    }
+    
     
     //app通知的点击事件
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
